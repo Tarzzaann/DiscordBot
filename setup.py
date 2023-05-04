@@ -6,6 +6,7 @@ import requests
 
 DiscordSetupMessages = ""
 DiscordBotMessages = ""
+DiscordBotSetupError = ""
 
 
 class SetupLogging:
@@ -64,7 +65,7 @@ class Config:
         self.de_lang_path = f"base/config/lang/{self.lang_de}"
         self.en_lang_path = f"base/config/lang/{self.lang_en}"
         self.properties_data = {
-            "version": "0.0.1",
+            "version": "0.0.2",
         }
         self.config_data = {
             "DiscordBotConfig": {}
@@ -105,17 +106,19 @@ class Config:
 
     def load_de(self):
         with open(self.de_lang_path, "r") as f:
-            global DiscordSetupMessages, DiscordBotMessages
+            global DiscordSetupMessages, DiscordBotMessages, DiscordBotSetupError
             langde = json.load(f)
             DiscordSetupMessages = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
-            DiscordBotMessages = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotMessages"]
+            DiscordBotMessages = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"]
+            DiscordBotSetupError = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"]["DiscordBotErrorMessages"]
 
     def load_en(self):
         with open(self.en_lang_path, "r") as f:
-            global DiscordSetupMessages, DiscordBotMessages
+            global DiscordSetupMessages, DiscordBotMessages, DiscordBotSetupError
             langen = json.load(f)
             DiscordSetupMessages = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
-            DiscordBotMessages = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotMessages"]
+            DiscordBotMessages = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"]
+            DiscordBotSetupError = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"]["DiscordBotErrorMessages"]
 
 
 class Setup:
@@ -217,10 +220,10 @@ class DiscordBotConfig:
         self.Config = Config()
         self.Logger = SetupLogging()
         self.write_prefix = TermStyle.cyan
+        self.setup_format = TermStyle.green + "[SETUP]" + TermStyle.reset
 
     def setup_channels(self):
-        channel_count = int(input(str(DiscordBotMessages["DiscordBotChannels"]
-                                      .format(TermStyle.green, "SETUP", TermStyle.reset)) + self.write_prefix))
+        channel_count = int(input(str(DiscordBotSetupError["DiscordBotChannelCount"].format(self.setup_format))))
         if channel_count == 0:
             self.Logger.errorlogger(f"Setup failed, channel count can't be 0")
             input("")
