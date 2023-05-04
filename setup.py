@@ -214,7 +214,7 @@ class DiscordBotConfig:
         self.write_prefix = TermStyle.cyan
 
     def setup_channels(self):
-        channel_count = int(input(self.msg_prefix + "" + self.write_prefix))
+        channel_count = int(input(self.msg_prefix + " WAAS" + self.write_prefix))
         if channel_count == 0:
             self.Logger.errorlogger(f"Setup failed, channel count can't be 0")
             input("")
