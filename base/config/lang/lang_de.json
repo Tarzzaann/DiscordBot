@@ -5,6 +5,7 @@
     "DiscordBotLangAuthor": "Tarzan",
     "DiscordLangCategory": {
       "DiscordBotMessages": {
+        "DiscordBotChannels": "[{}{}{}] Wie viele Channels hast du ?"
       },
       "DiscordSetupMessages": {
         "DiscordSetupEnv": "[{}{}{}] Nötige Dateien wurden erstellt.",

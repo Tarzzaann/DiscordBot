@@ -4,6 +4,9 @@ import time
 import logging
 import requests
 
+DiscordSetupMessages = ""
+DiscordBotMessages = ""
+
 
 class SetupLogging:
     def __init__(self):
@@ -102,15 +105,17 @@ class Config:
 
     def load_de(self):
         with open(self.de_lang_path, "r") as f:
+            global DiscordSetupMessages, DiscordBotMessages
             langde = json.load(f)
-            setupmsg = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
-            discordsetupmsg = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
+            DiscordSetupMessages = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
+            DiscordBotMessages = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotMessages"]
 
     def load_en(self):
         with open(self.en_lang_path, "r") as f:
+            global DiscordSetupMessages, DiscordBotMessages
             langen = json.load(f)
-            setupmsg = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
-            discordsetupmsg = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
+            DiscordSetupMessages = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
+            DiscordBotMessages = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotMessages"]
 
 
 class Setup:
@@ -170,17 +175,18 @@ class Setup:
             self.BotSetup.check()
         else:
             self.Logger.errorlogger(f"Exiting...")
+            input(self.msg_prefix_err + " Error version not up to date.")
             exit()
 
     def get_version(self):
-        url_version = requests.get(self.Config.url_version).json()["Version"]
+        url_version = requests.get(self.Config.url_version).json()["version"]
         fetch_version = json.load(open(self.Config.properties_path, "r"))["version"]
         self.Logger.infologger(f"Checking Version")
         if url_version == fetch_version:
             self.Logger.infologger(f"Version is up to date -> {url_version}")
             return True
         else:
-            self.Logger.errorlogger(f"Version is not up to date -> {url_version}")
+            self.Logger.errorlogger(f"Version is not up to date {fetch_version} " + "->" + f" {url_version}")
             self.Logger.errorlogger(f"Updating Version to -> {url_version}")
             return False
 
@@ -210,11 +216,11 @@ class DiscordBotConfig:
     def __init__(self):
         self.Config = Config()
         self.Logger = SetupLogging()
-        self.msg_prefix = "{}[{}{}{}]".format(TermStyle.reset, TermStyle.green, "SETUP", TermStyle.reset)
         self.write_prefix = TermStyle.cyan
 
     def setup_channels(self):
-        channel_count = int(input(self.msg_prefix + " WAAS" + self.write_prefix))
+        channel_count = int(input(str(DiscordBotMessages["DiscordBotChannels"]
+                                      .format(TermStyle.green, "SETUP", TermStyle.reset)) + self.write_prefix))
         if channel_count == 0:
             self.Logger.errorlogger(f"Setup failed, channel count can't be 0")
             input("")
