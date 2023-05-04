@@ -1,0 +1,16 @@
+{
+  "DiscordBotLangContent": {
+    "DiscordBotLang": "de",
+    "DiscordBotLangName": "Deutsch",
+    "DiscordBotLangAuthor": "Tarzan",
+    "DiscordLangCategory": {
+      "DiscordBotMessages": {
+
+      },
+      "DiscordSetupMessages": {
+        "DiscordSetupEnv": "[{}{}{}] Nötige Dateien wurden erstellt.",
+        "DiscordSetupLogger": "[{}{}{}] Willst du den Logger aktivieren für den Bot (y/n)?"
+      }
+    }
+  }
+}
