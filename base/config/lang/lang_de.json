@@ -13,10 +13,10 @@
           "DiscordBotRoleNameErr": "[{}{}{}] Du hast keinen Namen angegeben. Bitte Gebe ein Namen an",
           "DiscordBotRoleIDErr": "[{}{}{}] Du hast keine ID angegeben. Bitte Gebe eine ID an"
         },
-        "DiscordBotChannelCount": "[{}{}{}] Wie viele Channels hast du ?",
+        "DiscordBotChannelCount": "[{}{}{}] Wie viele Channels hast du: {}",
         "DiscordBotChannelName": "[{}{}{}] Gib den namen des {} Channels ein: {}",
         "DiscordBotChannelID": "[{}{}{}] Gib die ID des {} Channels ein: {}",
-        "DiscordBotRoleCount": "[{}{}{}] Wie viele Rollen hast du ?",
+        "DiscordBotRoleCount": "[{}{}{}] Wie viele Rollen hast du: {}",
         "DiscordBotRoleName": "[{}{}{}] Gib den namen der {} Rolle ein: {}",
         "DiscordBotRoleID": "[{}{}{}] Gib die ID der {} Rolle ein: {}"
 
