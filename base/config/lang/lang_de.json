@@ -23,7 +23,8 @@
       },
       "DiscordSetupMessages": {
         "DiscordSetupEnv": "[{}{}{}] Nötige Dateien wurden erstellt.",
-        "DiscordSetupLogger": "[{}{}{}] Willst du den Logger aktivieren für den Bot (y/n)?"
+        "DiscordSetupLogger": "[{}{}{}] Willst du den Logger aktivieren für den Bot (y/n)?",
+        "DiscordSetupDone": "[{}{}{}] Es sieht danach aus als wäre der Bot fertig eingerichtet. Möchstest du ihn neu konfigurieren (y/n)?"
       }
     }
   }
