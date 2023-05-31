@@ -1,0 +1,10 @@
+#########################################
+#                                       #
+#      Full listet Error Codes          #
+#           Made by Tarzan              #
+#                                       #
+#########################################
+
+CH_COUNT_NULL_ERR
+CH_NEGATIV_NUM_ERR
+CH_INVALID_ERR

@@ -1,0 +1,13 @@
+#########################################
+#                                       #
+#       Volle Liste Error Codes         #
+#          Gemacht von Tarzan           #
+#                                       #
+#########################################
+
+CH_COUNT_NULL_ERR
+ - Die Anzahl der Channels ist 0, es muss mindestens 1 Channel geben.
+CH_NEGATIV_NUM_ERR
+ - Die Anzahl der Channels ist negativ, es muss mindestens 1 Channel geben.
+CH_INVALID_ERR
+ - Die Anzahl der Channels ist ungültig, es muss mindestens 1 Channel geben.
