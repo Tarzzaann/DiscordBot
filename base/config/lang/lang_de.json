@@ -1,30 +1,28 @@
 {
   "DiscordBotLangContent": {
     "DiscordBotLang": "de",
-    "DiscordBotLangName": "Deutsch",
+    "DiscordBotLangName": "German",
     "DiscordBotLangAuthor": "Tarzan#1055",
-    "DiscordLangCategory": {
+    "DiscordBotLangCategory": {
       "DiscordBotSetupMessages": {
-        "DiscordBotErrorMessages": {
-          "DiscordBotChannelCountErr": "[{}{}{}] Du hast keine Channel angegeben. Bitte Gebe mindestens ein Channel an",
-          "DiscordBotChannelNameErr": "[{}{}{}] Du hast keinen Namen angegeben. Bitte Gebe ein Namen an",
-          "DiscordBotChannelIDErr": "[{}{}{}] Du hast keine ID angegeben. Bitte Gebe eine ID an",
-          "DiscordBotRoleCountErr": "[{}{}{}] Du hast keine Rollen angegeben. Bitte Gebe mindestens eine Rolle an",
-          "DiscordBotRoleNameErr": "[{}{}{}] Du hast keinen Namen angegeben. Bitte Gebe ein Namen an",
-          "DiscordBotRoleIDErr": "[{}{}{}] Du hast keine ID angegeben. Bitte Gebe eine ID an"
-        },
-        "DiscordBotChannelCount": "[{}{}{}] Wie viele Channels hast du: {}",
-        "DiscordBotChannelName": "[{}{}{}] Gib den namen des {} Channels ein: {}",
-        "DiscordBotChannelID": "[{}{}{}] Gib die ID des {} Channels ein: {}",
-        "DiscordBotRoleCount": "[{}{}{}] Wie viele Rollen hast du: {}",
-        "DiscordBotRoleName": "[{}{}{}] Gib den namen der {} Rolle ein: {}",
-        "DiscordBotRoleID": "[{}{}{}] Gib die ID der {} Rolle ein: {}"
-
+        "DISCORD_SETUP_LOGGER": "[{}{}{}] Willst du den Logger aktivieren?",
+        "DISCORD_SETUP_DONE": "[{}{}{}] Es sieht danach aus als wäre der Bot eingerichtet. Möchtest du ihn neu konfigurieren"
       },
       "DiscordSetupMessages": {
-        "DiscordSetupEnv": "[{}{}{}] Nötige Dateien wurden erstellt.",
-        "DiscordSetupLogger": "[{}{}{}] Willst du den Logger aktivieren für den Bot (y/n)?",
-        "DiscordSetupDone": "[{}{}{}] Es sieht danach aus als wäre der Bot fertig eingerichtet. Möchstest du ihn neu konfigurieren (y/n)?"
+        "DISCORD_BOT_CHANNEL_COUNT": "[{}{}{}] Wie viele Channel sind auf deinem Discord Server: {}",
+        "DISCORD_BOT_CHANNEL_NAME": "[{}{}{}] Gebe den Namen des {} Channel an: {}",
+        "DISCORD_BOT_CHANNEL_ID": "[{}{}{}] Gebe die ID des {} Channel an: {}",
+        "DISCORD_BOT_ROLE_COUNT": "[{}{}{}] Wie viele Rollen sind auf deinem Discord Server: {}",
+        "DISCORD_BOT_ROLE_NAME": "[{}{}{}] Gebe den Namen der {} Rolle an: {}",
+        "DISCORD_BOT_ROLE_ID": "[{}{}{}] Gebe die ID der {} Rolle an: {}"
+      },
+      "DiscordSetupErrorMessages": {
+        "ERR_CH_COUNT": "[{}{}{}] Du hast keine Channel angegeben. Bitte gebe mindestens einen Channel an.",
+        "ERR_CH_NAME": "[{}{}{}] Du hast keinen Namen angegeben. Bitte gebe einen Namen an.",
+        "ERR_CH_ID": "[{}{}{}] Du hast keine ID angegeben. Bitte gebe eine ID an.",
+        "ERR_RL_COUNT": "[{}{}{}] Du hast keine Rollen angegeben. Bitte gebe mindestens eine Rolle an.",
+        "ERR_RL_NAME": "[{}{}{}] Du hast keinen Namen angegeben. Bitte gebe einen Namen an.",
+        "ERR_RL_ID": "[{}{}{}] Du hast keine ID angegeben. Bitte gebe eine ID an."
       }
     }
   }
