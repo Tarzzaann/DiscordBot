@@ -1,0 +1,10 @@
+{
+  "Themes": {
+    "default": {
+      "SETUP_PREFIX": "green",
+      "ERROR_PREFIX": "red",
+      "ASCII_SETUP_BOT": "magenta",
+      "ASCII_SETUP": "magenata"
+    }
+  }
+}
