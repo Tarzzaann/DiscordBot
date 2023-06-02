@@ -2,6 +2,7 @@ import os
 import json
 import time
 import logging
+import platform
 import requests
 
 custom_theme = ""
@@ -9,6 +10,9 @@ setup_prefix = ""
 error_prefix = ""
 ascii_setup_bot = ""
 ascii_setup = ""
+DiscordBotMessages = ""
+DiscordSetupMessages = ""
+DiscordBotSetupError = ""
 
 
 class TermStyle:
@@ -158,10 +162,11 @@ class Config:
         }
         self.config_data = {
             "DiscordBotConfig": {
+                "SetupConf": {},
                 "TextChannels": {},
                 "VoiceChannels": {},
                 "NSFWChannels": {},
-                "AnouncementChannels": {},
+                "AnouncementChannels": {}
             }
         }
         self.theme_data = {
@@ -210,13 +215,112 @@ class Config:
             f.close()
 
     def loadlang_de(self):
+        global DiscordSetupMessages, DiscordBotMessages, DiscordBotSetupError
         with open(self.path_de_lang, "r") as f:
             langde = json.load(f)
+            DiscordSetupMessages = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
+            DiscordBotMessages = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"]
+            DiscordBotSetupError = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"][
+                "DiscordBotErrorMessages"]
 
     def loadlang_en(self):
+        global DiscordSetupMessages, DiscordBotMessages, DiscordBotSetupError
         with open(self.path_en_lang, "r") as f:
             langen = json.load(f)
+            DiscordSetupMessages = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
+            DiscordBotMessages = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"]
+            DiscordBotSetupError = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"][
+                "DiscordBotErrorMessages"]
 
 
-Start = TermStyle()
-Start.loadtheme()
+class Setup:
+    def __init__(self):
+        self.Config = Config()
+        self.Logger = SetupLogging()
+        self.TermStyle = TermStyle()
+
+    def get_lanuage(self):
+        lang = input("Language (de/en): ")
+        if lang == "de":
+            reqde = requests.get(self.Config.url_de)
+            if reqde.status_code == 200:
+                with open(self.Config.path_de_lang, "w") as f:
+                    f.write(reqde.text)
+                    f.close()
+                    self.Logger.infologger("Language set to -> de")
+                    self.Config.update_config("SetupConf", "language", "de")
+        elif lang == "en":
+            reqen = requests.get(self.Config.url_en)
+            if reqen.status_code == 200:
+                with open(self.Config.path_en_lang, "w") as f:
+                    f.write(reqen.text)
+                    f.close()
+                    self.Logger.infologger("language seto to -> en")
+                    self.Config.update_config("SetupConf", "language", "en")
+        else:
+            self.Logger.errorlogger("Language net set. retry...")
+            self.get_lanuage()
+
+    def load_language(self):
+        if os.path.exists(self.Config.path_de_lang):
+            self.Logger.infologger(f"Loading Language -> de | path: {self.Config.path_de_lang}")
+            self.Config.loadlang_de()
+        elif os.path.exists(self.Config.path_en_lang):
+            self.Logger.infologger(f"Loading Language -> en | path {self.Config.path_en_lang}")
+            self.Config.loadlang_en()
+        else:
+            self.Logger.errorlogger(f"Language not found")
+            exit(1)
+
+    def create_structure(self):
+        for folder in self.Config.paths:
+            if not os.path.exists(folder):
+                os.mkdir(folder)
+                self.Logger.infologger(f"Path created -> {folder}")
+            else:
+                pass
+
+    def create_envirmoment(self):
+        if self.get_version():
+            self.get_lanuage()
+            self.load_language()
+            print("All work fine")
+        else:
+            self.Logger.errorlogger("Version is not up to date")
+            exit(1)
+
+    def get_version(self):
+        url_version = requests.get(self.Config.url_version).json()["version"]
+        fetch_version = json.load(open(self.Config.path_properties, "r"))["version"]
+        self.Logger.infologger(f"Checking Version")
+        if url_version == fetch_version:
+            self.Logger.infologger(f"Version is up to date -> {url_version}")
+            return True
+        else:
+            self.Logger.errorlogger(f"Version is not up to date -> {fetch_version} -> new version: {url_version}")
+            return False
+
+    def start(self):
+        if platform.system() == "Linux":
+            print("Linux detected")
+            for folder in self.Config.path_check:
+                if not os.path.exists(folder):
+                    self.create_structure()
+                else:
+                    pass
+            self.Config.create_properties()
+            self.Config.create_config()
+            self.Config.create_theme()
+            self.create_envirmoment()
+        elif platform.system() == "Windows":
+            exit()
+        else:
+            print("[" + setup_prefix + Start.setup_prefix + Start.reset + "]" + " OS not supported yet")
+            exit()
+
+
+#Start = TermStyle()
+#Start.loadtheme()
+
+Start2 = Setup()
+Start2.start()
