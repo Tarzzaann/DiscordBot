@@ -1,8 +1,9 @@
 {
-  "DiscordBotConfig": {
-    "TextChannels": {},
-    "VoiceChannels": {},
-    "NSFWChannels": {},
-    "AnouncementChannels": {}
-  }
+    "DiscordBotConfig": {
+        "SetupConf": {},
+        "TextChannels": {},
+        "VoiceChannels": {},
+        "NSFWChannels": {},
+        "AnouncementChannels": {}
+    }
 }

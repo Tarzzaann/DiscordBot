@@ -1,6 +1,5 @@
 import os
 import json
-import time
 import logging
 import platform
 import requests
@@ -17,8 +16,12 @@ DiscordBotSetupError = ""
 
 class TermStyle:
     def __init__(self):
-        self.themes = ["default", "dark", "purble"]
-        self.themes_colors = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white", "reset"]
+        self.Config = Config()
+        self.logger = SetupLogging()
+        self.themes = ["default", "royal crimson"]
+        self.themes_colors = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white", "reset", "bold",
+                              "underline", "blink", "reverse", "concealed", "bg_black", "bg_red", "bg_green",
+                              "bg_yellow", "bg_blue", "bg_magenta", "bg_cyan", "bg_white"]
         self.config = Config()
         self.reset = "\033[0m"
         self.bold = "\033[1m"
@@ -53,24 +56,28 @@ class TermStyle:
             end_index = text.find("\n", start_index)
             custom_theme = text[start_index:end_index].strip().strip('"')
 
-        with open(self.config.path_theme) as f:
-            theme_data = json.load(f)
-            setup_prefix = theme_data["Themes"][custom_theme]["SETUP_PREFIX"]
-            error_prefix = theme_data["Themes"][custom_theme]["ERROR_PREFIX"]
-            ascii_setup_bot = theme_data["Themes"][custom_theme]["ASCII_SETUP_BOT"]
-            ascii_setup = theme_data["Themes"][custom_theme]["ASCII_SETUP"]
+        if os.path.exists(self.config.path_theme):
+            with open(self.config.path_theme) as f:
+                theme_data = json.load(f)
+                setup_prefix = theme_data["Themes"][custom_theme]["SETUP_PREFIX"]
+                error_prefix = theme_data["Themes"][custom_theme]["ERROR_PREFIX"]
+                ascii_setup_bot = theme_data["Themes"][custom_theme]["ASCII_SETUP_BOT"]
+                ascii_setup = theme_data["Themes"][custom_theme]["ASCII_SETUP"]
 
-            if setup_prefix in self.themes_colors:
-                setup_prefix = eval(f"self.{setup_prefix}")
+                if setup_prefix in self.themes_colors:
+                    error_prefix = eval(self.setup_prefix)
 
-            if error_prefix in self.themes_colors:
-                error_prefix = eval(f"self.{error_prefix}")
+                if error_prefix in self.themes_colors:
+                    error_prefix = eval(error_prefix)
 
-            if ascii_setup_bot in self.themes_colors:
-                ascii_setup_bot = eval(f"self.{ascii_setup_bot}")
+                if ascii_setup_bot in self.themes_colors:
+                    ascii_setup_bot = eval(ascii_setup_bot)
 
-            if ascii_setup in self.themes_colors:
-                ascii_setup = eval(f"self.{ascii_setup}")
+                if ascii_setup in self.themes_colors:
+                    ascii_setup = eval(ascii_setup)
+        else:
+            self.logger.errorlogger("ERROR: Theme file not found. Exiting...")
+            exit(1)
 
     def detect_theme(self):
         if custom_theme in self.themes:
@@ -79,36 +86,17 @@ class TermStyle:
             return False
 
     def loadtheme(self):
-        try:
+        theme = self.detect_theme()
+        if os.path.exists(self.config.path_theme) and os.path.exists(self.config.path_theme_cth):
             self.load()
-        except Exception as e:
-            input("[" + self.red + self.err_prefix + self.reset + "] " + str(e) + " not found!")
+        else:
+            self.logger.errorlogger("ERROR: Theme file not found. Exiting...")
             exit(1)
         if self.detect_theme():
-            theme = self.detect_theme()
-            print(theme + " theme loaded!")
+            self.logger.infologger(theme + " Theme loaded!")
         else:
-            pass
-
-    def printascii_botsetup(self):
-        return """
-  _________       __              __________        __   
- /   _____/ _____/  |_ __ ________\______   \ _____/  |_ 
- \_____  \_/ __ \   __\  |  \____ \|    |  _//  _ \   __/
- /        \  ___/|  | |  |  /  |_> >    |   (  <_> )  |  
-/_______  /\___  >__| |____/|   __/|______  /\____/|__|  
-        \/     \/           |__|          \/             
-        """
-
-    def printascii_setup(self):
-        return """
-  _________       __           
- /   _____/ _____/  |_ __ ________
- \_____  \_/ __ \   __\  |  \____ \\
- /        \  ___/|  | |  |  /  |_ > 
-/_______  /\___  >__| |____/|   __/
-        \/     \/           |__|                    
-        """
+            self.logger.errorlogger(f"ERROR: Invalid theme: " + theme)
+            exit(1)
 
 
 class SetupLogging:
@@ -134,9 +122,9 @@ class SetupLogging:
 class Config:
     def __init__(self):
         self.Logger = SetupLogging()
-        self.url_de = ""
+        self.url_de = "https://raw.githubusercontent.com/Tarzzaann/DiscordBot/master/base/config/lang/lang_de.json"
         self.url_en = ""
-        self.url_version = ""
+        self.url_version = "https://raw.githubusercontent.com/Tarzzaann/DiscordBot/master/base/config/properties.json"
         self.url_errcodes_de = ""
         self.url_errcodes_en = ""
         self.file_cth_theme = "theme.cth"
@@ -170,8 +158,22 @@ class Config:
             }
         }
         self.theme_data = {
-            "Themes": {}
+            "Themes": {
+                "default": {
+                    "SETUP_PREFIX": "green",
+                    "ERROR_PREFIX": "red",
+                    "ASCII_SETUP_BOT": "yellow",
+                    "ASCII_SETUP": "yellow"
+                },
+                "royal crimson": {
+                    "SETUP_PREFIX": "red",
+                    "ERROR_PREFIX": "red",
+                    "ASCII_SETUP_BOT": "red",
+                    "ASCII_SETUP": "red"
+                }
+            }
         }
+        self.theme_cth_data = 'custom_theme: "default"'
         self.paths = ["base", "base/config", "base/config/lang", "base/config/logs", "base/config/stores",
                       "base/config/theme"]
         self.path_check = ["base/config", "base/config/lang", "base/config/logs", "base/config/stores",
@@ -213,24 +215,28 @@ class Config:
             json.dump(self.theme_data, f, indent=4)
             self.Logger.infologger(f"{self.file_theme} created in -> {self.path_theme}")
             f.close()
+        with open(self.path_theme_cth, "w") as f:
+            f.write(self.theme_cth_data)
+            self.Logger.infologger(f"{self.file_cth_theme} created in -> {self.path_theme_cth}")
+            f.close()
 
     def loadlang_de(self):
         global DiscordSetupMessages, DiscordBotMessages, DiscordBotSetupError
         with open(self.path_de_lang, "r") as f:
             langde = json.load(f)
-            DiscordSetupMessages = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
-            DiscordBotMessages = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"]
-            DiscordBotSetupError = langde["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"][
-                "DiscordBotErrorMessages"]
+            DiscordSetupMessages = langde["DiscordBotLangContent"]["DiscordBotLangCategory"]["DiscordBotSetupMessages"]
+            DiscordBotMessages = langde["DiscordBotLangContent"]["DiscordBotLangCategory"]["DiscordSetupMessages"]
+            DiscordBotSetupError = langde["DiscordBotLangContent"]["DiscordBotLangCategory"][
+                "DiscordSetupErrorMessages"]
 
     def loadlang_en(self):
         global DiscordSetupMessages, DiscordBotMessages, DiscordBotSetupError
         with open(self.path_en_lang, "r") as f:
             langen = json.load(f)
-            DiscordSetupMessages = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordSetupMessages"]
-            DiscordBotMessages = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"]
-            DiscordBotSetupError = langen["DiscordBotLangContent"]["DiscordLangCategory"]["DiscordBotSetupMessages"][
-                "DiscordBotErrorMessages"]
+            DiscordSetupMessages = langen["DiscordBotLangContent"]["DiscordBotLangCategory"]["DiscordBotSetupMessages"]
+            DiscordBotMessages = langen["DiscordBotLangContent"]["DiscordBotLangCategory"]["DiscordSetupMessages"]
+            DiscordBotSetupError = langen["DiscordBotLangContent"]["DiscordBotLangCategory"][
+                "DiscordSetupErrorMessages"]
 
 
 class Setup:
@@ -276,7 +282,6 @@ class Setup:
         for folder in self.Config.paths:
             if not os.path.exists(folder):
                 os.mkdir(folder)
-                self.Logger.infologger(f"Path created -> {folder}")
             else:
                 pass
 
@@ -284,7 +289,6 @@ class Setup:
         if self.get_version():
             self.get_lanuage()
             self.load_language()
-            print("All work fine")
         else:
             self.Logger.errorlogger("Version is not up to date")
             exit(1)
@@ -300,27 +304,28 @@ class Setup:
             self.Logger.errorlogger(f"Version is not up to date -> {fetch_version} -> new version: {url_version}")
             return False
 
+    def root_menu(self):
+        self.Logger.infologger("Entering Root Menu")
+
     def start(self):
         if platform.system() == "Linux":
-            print("Linux detected")
-            for folder in self.Config.path_check:
-                if not os.path.exists(folder):
-                    self.create_structure()
-                else:
-                    pass
-            self.Config.create_properties()
-            self.Config.create_config()
-            self.Config.create_theme()
-            self.create_envirmoment()
+            if not os.path.exists(self.Config.path_base):
+                for folder in self.Config.path_check:
+                    if not os.path.exists(folder):
+                        self.create_structure()
+                    else:
+                        pass
+                self.Config.create_properties()
+                self.Config.create_config()
+                self.Config.create_theme()
+                self.create_envirmoment()
+            else:
+                self.root_menu()
         elif platform.system() == "Windows":
-            exit()
+            exit(1)
         else:
-            print("[" + setup_prefix + Start.setup_prefix + Start.reset + "]" + " OS not supported yet")
-            exit()
+            exit(1)
 
 
-#Start = TermStyle()
-#Start.loadtheme()
-
-Start2 = Setup()
-Start2.start()
+Setup = Setup()
+Setup.start()

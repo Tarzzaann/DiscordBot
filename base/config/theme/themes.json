@@ -1,10 +1,16 @@
 {
-  "Themes": {
-    "default": {
-      "SETUP_PREFIX": "green",
-      "ERROR_PREFIX": "red",
-      "ASCII_SETUP_BOT": "magenta",
-      "ASCII_SETUP": "magenata"
+    "Themes": {
+        "default": {
+            "SETUP_PREFIX": "green",
+            "ERROR_PREFIX": "red",
+            "ASCII_SETUP_BOT": "yellow",
+            "ASCII_SETUP": "yellow"
+        },
+        "royal crimson": {
+            "SETUP_PREFIX": "red",
+            "ERROR_PREFIX": "red",
+            "ASCII_SETUP_BOT": "red",
+            "ASCII_SETUP": "red"
+        }
     }
-  }
 }
