@@ -1,23 +1,24 @@
-import os
 import json
 import logging
-import platform
+import os
 import requests
 
 custom_theme = ""
-setup_prefix = ""
-error_prefix = ""
-ascii_setup_bot = ""
-ascii_setup = ""
-DiscordBotMessages = ""
-DiscordSetupMessages = ""
-DiscordBotSetupError = ""
+setup_prefix, error_prefix, ascii_setup, ascii_setup_bot = "", "", "", ""
 
 
-class TermStyle:
+class Console:
     def __init__(self):
         self.Config = Config()
         self.logger = SetupLogging()
+        self.root_embed = """
+  _________       __                    _____                       
+ /   _____/ _____/  |_ __ ________     /     \   ____   ____  __ __ 
+ \_____  \_/ __ \   __\  |  \____ \   /  \ /  \_/ __ \ /    \|  |  \
+ /        \  ___/|  | |  |  /  |_> > /    Y    \  ___/|   |  \  |  /
+/_______  /\___  >__| |____/|   __/  \____|__  /\___  >___|  /____/ 
+        \/     \/           |__|             \/     \/     \/       
+        """
         self.themes = ["default", "royal crimson"]
         self.themes_colors = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white", "reset", "bold",
                               "underline", "blink", "reverse", "concealed", "bg_black", "bg_red", "bg_green",
@@ -45,11 +46,9 @@ class TermStyle:
         self.bg_magenta = "\033[45m"
         self.bg_cyan = "\033[46m"
         self.bg_white = "\033[47m"
-        self.setup_prefix = f"SETUP"
-        self.err_prefix = f"ERROR"
 
     def load(self):
-        global custom_theme, setup_prefix, error_prefix, ascii_setup_bot, ascii_setup
+        global setup_prefix, error_prefix, ascii_setup, ascii_setup_bot, custom_theme
         with open(self.config.path_theme_cth) as f:
             text = f.read()
             start_index = text.find("custom_theme =") + len("custom_theme =")
@@ -59,44 +58,67 @@ class TermStyle:
         if os.path.exists(self.config.path_theme):
             with open(self.config.path_theme) as f:
                 theme_data = json.load(f)
-                setup_prefix = theme_data["Themes"][custom_theme]["SETUP_PREFIX"]
-                error_prefix = theme_data["Themes"][custom_theme]["ERROR_PREFIX"]
-                ascii_setup_bot = theme_data["Themes"][custom_theme]["ASCII_SETUP_BOT"]
-                ascii_setup = theme_data["Themes"][custom_theme]["ASCII_SETUP"]
+                setup_prefix_data = theme_data["Themes"][custom_theme]["SETUP_PREFIX"]
+                error_prefix_data = theme_data["Themes"][custom_theme]["ERROR_PREFIX"]
+                ascii_setup_bot_data = theme_data["Themes"][custom_theme]["ASCII_SETUP_BOT"]
+                ascii_setup_data = theme_data["Themes"][custom_theme]["ASCII_SETUP"]
 
-                if setup_prefix in self.themes_colors:
-                    error_prefix = eval(self.setup_prefix)
-
-                if error_prefix in self.themes_colors:
-                    error_prefix = eval(error_prefix)
-
-                if ascii_setup_bot in self.themes_colors:
-                    ascii_setup_bot = eval(ascii_setup_bot)
-
-                if ascii_setup in self.themes_colors:
-                    ascii_setup = eval(ascii_setup)
+                if setup_prefix_data in self.themes_colors:
+                    setup_prefix = getattr(self, setup_prefix_data)
+                if error_prefix_data in self.themes_colors:
+                    error_prefix = getattr(self, error_prefix_data)
+                if ascii_setup_bot_data in self.themes_colors:
+                    ascii_setup_bot = getattr(self, ascii_setup_bot_data)
+                if ascii_setup_data in self.themes_colors:
+                    ascii_setup = getattr(self, ascii_setup_data)
         else:
             self.logger.errorlogger("ERROR: Theme file not found. Exiting...")
             exit(1)
 
     def detect_theme(self):
+        self.logger.infologger("Detecting Theme !")
         if custom_theme in self.themes:
-            return custom_theme
+            return True
         else:
             return False
 
     def loadtheme(self):
-        theme = self.detect_theme()
         if os.path.exists(self.config.path_theme) and os.path.exists(self.config.path_theme_cth):
             self.load()
         else:
             self.logger.errorlogger("ERROR: Theme file not found. Exiting...")
             exit(1)
         if self.detect_theme():
-            self.logger.infologger(theme + " Theme loaded!")
+            self.logger.infologger(f"{custom_theme} Theme loaded !")
         else:
-            self.logger.errorlogger(f"ERROR: Invalid theme: " + theme)
+            self.logger.errorlogger(f"ERROR: Invalid theme: {custom_theme} ")
             exit(1)
+
+    def printinfo(self, text):
+        print("[{}SETUP{}] {}".format(setup_prefix, self.reset, text))
+
+    def printerror(self, text):
+        print("[{}ERROR{}] {}".format(error_prefix, self.reset, text))
+
+    def printascii_bot(self):
+        print(ascii_setup_bot + """
+________  .__                              .___ __________        __   
+\______ \ |__| ______ ____  ___________  __| _/ \______   \ _____/  |_ 
+ |    |  \|  |/  ___// ___\/  _ \_  __ \/ __ |   |    |  _//  _ \   __
+ |    `   \  |\___ \\  \__(  <_> )  | \/ /_/ |   |    |   (  <_> )  |  
+/_______  /__/____  >\___  >____/|__|  \____ |   |______  /\____/|__|  
+        \/        \/     \/                 \/          \/             
+        """ + self.reset)
+
+    def printascii_setup(self):
+        print(ascii_setup_bot + """
+________  .__                              .___   _________       __                
+\______ \ |__| ______ ____  ___________  __| _/  /   _____/ _____/  |_ __ ________  
+ |    |  \|  |/  ___// ___\/  _ \_  __ \/ __ |   \_____  \_/ __ \   __\  |  \_____
+ |    `   \  |\___ \\  \__(  <_> )  | \/ /_/ |   /        \  ___/|  | |  |  /  |_> >
+/_______  /__/____  >\___  >____/|__|  \____ |  /_______  /\___  >__| |____/|   __/ 
+        \/        \/     \/                 \/          \/     \/           |__|            
+        """ + self.reset)
 
 
 class SetupLogging:
@@ -243,7 +265,7 @@ class Setup:
     def __init__(self):
         self.Config = Config()
         self.Logger = SetupLogging()
-        self.TermStyle = TermStyle()
+        self.Console = Console()
 
     def get_lanuage(self):
         lang = input("Language (de/en): ")
@@ -304,27 +326,24 @@ class Setup:
             self.Logger.errorlogger(f"Version is not up to date -> {fetch_version} -> new version: {url_version}")
             return False
 
-    def root_menu(self):
-        self.Logger.infologger("Entering Root Menu")
+    def menu(self):
+        self.Logger.infologger("Entering Menu")
 
     def start(self):
-        if platform.system() == "Linux":
-            if not os.path.exists(self.Config.path_base):
-                for folder in self.Config.path_check:
-                    if not os.path.exists(folder):
-                        self.create_structure()
-                    else:
-                        pass
-                self.Config.create_properties()
-                self.Config.create_config()
-                self.Config.create_theme()
-                self.create_envirmoment()
-            else:
-                self.root_menu()
-        elif platform.system() == "Windows":
-            exit(1)
+        if not os.path.exists(self.Config.path_base):
+            for folder in self.Config.path_check:
+                if not os.path.exists(folder):
+                    self.create_structure()
+                else:
+                    pass
+            self.Config.create_properties()
+            self.Config.create_config()
+            self.Config.create_theme()
+            self.create_envirmoment()
+            self.Console.loadtheme()
         else:
-            exit(1)
+            self.Console.loadtheme()
+            self.menu()
 
 
 Setup = Setup()
